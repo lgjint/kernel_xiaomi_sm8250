@@ -50,6 +50,15 @@ $(warning Detected assembler with broken .inst; disassembly will be unreliable)
 endif
 
 ifeq ($(cc-name),clang)
+#Enable fast FMA optimizations
+KBUILD_CFLAGS   += -ffp-contract=fast
+#Enable hot cold split optimization
+KBUILD_CFLAGS   += -mllvm -hot-cold-split=true
+KBUILD_LDFLAGS  += -O3 --plugin-opt=O3
+KBUILD_CFLAGS	+= -mcpu=cortex-a77 -mtune=cortex-a77 -ffast-math -fno-stack-protector -fcf-protection=none --cuda-path=/dev/null
+KBUILD_AFLAGS   += -mcpu=cortex-a77 -mtune=cortex-a77
+KBUILD_LDFLAGS  += -mllvm -mcpu=cortex-a77 -mtune=cortex-a77
+
 KBUILD_CFLAGS	+= -mno-implicit-float
 else
 KBUILD_CFLAGS	+= -mgeneral-regs-only
@@ -220,3 +229,7 @@ define archhelp
   echo  '                  (distribution) /sbin/installkernel or'
   echo  '                  install to $$(INSTALL_PATH) and run lilo'
 endef
+
+$(info KBUILD_LDFLAGS is $(KBUILD_LDFLAGS))
+$(info KBUILD_ADFLAGS is $(KBUILD_ADFLAGS))
+$(info KBUILD_CFLAGS is $(KBUILD_CFLAGS))
