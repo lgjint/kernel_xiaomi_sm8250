@@ -50,6 +50,11 @@ $(warning Detected assembler with broken .inst; disassembly will be unreliable)
 endif
 
 ifeq ($(cc-name),clang)
+KBUILD_LDFLAGS  += -O3 --plugin-opt=O3
+KBUILD_CFLAGS	+= -mcpu=cortex-a77 -mtune=cortex-a77
+KBUILD_AFLAGS   += -mcpu=cortex-a77 -mtune=cortex-a77
+KBUILD_LDFLAGS  += -mllvm -mcpu=cortex-a77 -mtune=cortex-a77
+
 KBUILD_CFLAGS	+= -mno-implicit-float
 else
 KBUILD_CFLAGS	+= -mgeneral-regs-only
